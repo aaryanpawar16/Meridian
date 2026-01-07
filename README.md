@@ -76,13 +76,16 @@ Python (v3.10+)
 1. Clone the Repository
 
 git clone [https://github.com/aaryanpawar16/meridian.git](https://github.com/aaryanpawar16/meridian.git)
+
 cd meridian
 
 
 2. Setup Frontend
 
 cd frontend
+
 npm install
+
 npm run dev
 
 
@@ -129,3 +132,4 @@ Aaryan Pawar - Lead Developer & Product Designer
 
 
 Built with ❤️ for the LMA Edge Hackathon.
+
