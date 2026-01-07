@@ -4,7 +4,8 @@ The autonomous operating system for the multi-trillion dollar syndicated loan ma
 
 🏆 LMA Edge Hackathon Submission
 
-(Note: Replace with a screenshot of your dashboard if available)
+<img width="1916" height="886" alt="image" src="https://github.com/user-attachments/assets/9bda60cd-d72e-4ea5-a661-3e53990d77bd" />
+
 
 📖 The Problem
 
@@ -74,7 +75,7 @@ Python (v3.10+)
 
 1. Clone the Repository
 
-git clone [https://github.com/your-username/meridian.git](https://github.com/your-username/meridian.git)
+git clone [https://github.com/aaryanpawar16/meridian.git](https://github.com/aaryanpawar16/meridian.git)
 cd meridian
 
 
@@ -125,5 +126,6 @@ Mitigates credit risk by surfacing covenant breaches in real-time.
 👥 Team
 
 Aaryan Pawar - Lead Developer & Product Designer
+
 
 Built with ❤️ for the LMA Edge Hackathon.
