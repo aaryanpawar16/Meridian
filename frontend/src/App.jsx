@@ -5,7 +5,7 @@ import {
   MoreVertical, CheckCircle, AlertCircle, ArrowRight,
   Shield, Globe, File as FileIcon, BarChart as BarChartIcon, Menu, X,
   Zap, BrainCircuit, TrendingDown, Clock, Plus, Save, Trash2, Eye, FileCheck,
-  User, Mail, Lock, Smartphone, RefreshCw
+  User, Lock, RefreshCw
 } from 'lucide-react';
 
 // --- FONTS & STYLES ---
@@ -44,6 +44,14 @@ const FontStyles = () => (
     .animate-bar {
       animation: grow-bar 1s ease-out forwards;
     }
+    
+    .animate-fade-in {
+      animation: fadeIn 0.5s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   `}</style>
 );
 
@@ -62,8 +70,7 @@ const MeridianLogo = ({ className, size = 24 }) => (
   />
 );
 
-// --- COMPONENTS ---
-
+// --- WAVY BACKGROUND COMPONENT ---
 const WavyBackground = ({ children, className, containerClassName, colors, waveWidth, backgroundFill, blur = 10, speed = "fast", waveOpacity = 0.5, ...props }) => {
   let w, h, nt, i, x, ctx, canvas;
   const canvasRef = useRef(null);
@@ -120,6 +127,8 @@ const WavyBackground = ({ children, className, containerClassName, colors, waveW
   );
 };
 
+// --- SHARED COMPONENTS ---
+
 const Toast = ({ message, type, onClose }) => (
   <div className={cn(
     "fixed bottom-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg flex items-center space-x-3 transition-all duration-300 transform translate-y-0 opacity-100",
@@ -139,7 +148,7 @@ const Modal = ({ isOpen, onClose, title, children }) => {
   if (!isOpen) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <div className="bg-slate-900 border border-slate-800 rounded-xl w-full max-w-lg shadow-2xl transform transition-all scale-100 opacity-100">
+      <div className="bg-slate-900 border border-slate-800 rounded-xl w-full max-w-lg shadow-2xl transform transition-all scale-100 opacity-100 font-body">
         <div className="flex justify-between items-center p-6 border-b border-slate-800">
           <h3 className="text-xl font-heading font-bold text-white">{title}</h3>
           <button onClick={onClose} className="text-slate-400 hover:text-white transition-colors">
@@ -383,19 +392,19 @@ const AnalyticsContent = () => (
     </div>
     
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Mock Chart 1: Exposure by Currency */}
+        {/* Exposure by Currency Chart */}
         <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-xl">
             <h3 className="text-lg font-bold text-white mb-6 font-heading flex items-center"><PieChart size={18} className="mr-2 text-indigo-400"/> Exposure by Currency</h3>
             <div className="space-y-4">
                 {[
-                    { label: "USD", val: "65%", color: "bg-indigo-500", width: "65%" },
-                    { label: "EUR", val: "20%", color: "bg-purple-500", width: "20%" },
-                    { label: "GBP", val: "15%", color: "bg-emerald-500", width: "15%" },
+                    { label: "USD", val: "65%", amount: "$810M", color: "bg-indigo-500", width: "65%" },
+                    { label: "EUR", val: "20%", amount: "$250M", color: "bg-purple-500", width: "20%" },
+                    { label: "GBP", val: "15%", amount: "$185M", color: "bg-emerald-500", width: "15%" },
                 ].map((item, idx) => (
                     <div key={idx}>
                         <div className="flex justify-between text-xs text-slate-400 mb-1">
                             <span>{item.label}</span>
-                            <span>{item.val}</span>
+                            <span className="text-white font-mono">{item.amount} ({item.val})</span>
                         </div>
                         <div className="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden">
                             <div className={`h-2.5 rounded-full ${item.color} animate-bar`} style={{ width: item.width, '--height': '100%' }}></div>
@@ -405,21 +414,47 @@ const AnalyticsContent = () => (
             </div>
         </div>
 
-        {/* Mock Chart 2: Risk Distribution */}
+        {/* Risk Distribution Chart */}
         <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 shadow-xl">
-            <h3 className="text-lg font-bold text-white mb-6 font-heading flex items-center"><BarChartIcon size={18} className="mr-2 text-indigo-400"/> Risk Distribution</h3>
-            <div className="flex items-end justify-between h-40 space-x-2 pt-4">
-                {[40, 65, 30, 80, 50, 90, 45].map((h, i) => (
-                    <div key={i} className="w-full bg-slate-800 rounded-t-sm relative group">
-                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-indigo-600 to-purple-500 rounded-t-sm transition-all duration-1000 ease-out" style={{ height: `${h}%` }}></div>
-                        <div className="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 transform -translate-x-1/2 bg-white text-slate-900 text-[10px] py-1 px-2 rounded font-bold transition-opacity">
-                            {h}M
+            <h3 className="text-lg font-bold text-white mb-6 font-heading flex items-center"><BarChartIcon size={18} className="mr-2 text-rose-400"/> Risk Distribution</h3>
+            <div className="flex items-end justify-between h-40 space-x-4 pt-4 px-2">
+                {[
+                    { label: "Low", value: 450, height: "45%", color: "from-emerald-600 to-emerald-400" },
+                    { label: "Med", value: 680, height: "68%", color: "from-indigo-600 to-indigo-400" },
+                    { label: "High", value: 120, height: "25%", color: "from-amber-600 to-amber-400" },
+                    { label: "Critical", value: 45, height: "15%", color: "from-rose-600 to-rose-400" },
+                ].map((item, i) => (
+                    <div key={i} className="w-full bg-slate-800/50 rounded-t-lg relative group flex flex-col justify-end h-full">
+                        <div className={`w-full rounded-t-lg bg-gradient-to-t ${item.color} transition-all duration-1000 ease-out relative`} style={{ height: item.height }}>
+                             <div className="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 transform -translate-x-1/2 bg-slate-800 border border-slate-700 text-white text-[10px] py-1 px-2 rounded shadow-lg font-bold transition-opacity whitespace-nowrap z-10">
+                                ${item.value}M
+                            </div>
                         </div>
+                        <div className="text-center mt-2 text-xs text-slate-400 font-medium">{item.label}</div>
                     </div>
                 ))}
             </div>
-            <div className="flex justify-between mt-2 text-xs text-slate-500 border-t border-slate-800 pt-2">
-                <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+        </div>
+    </div>
+
+    {/* Additional Insight Panel */}
+    <div className="bg-slate-900/50 border border-slate-800 rounded-xl p-6">
+        <h4 className="text-sm font-bold text-white mb-4 flex items-center"><Activity size={16} className="mr-2 text-indigo-400"/> Risk Concentration Insight</h4>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="p-4 bg-slate-800 rounded-lg">
+                <div className="text-xs text-slate-500 mb-1">Top Sector Exposure</div>
+                <div className="text-lg font-bold text-white font-heading">Energy & Power</div>
+                <div className="text-xs text-emerald-400 mt-1 flex items-center"><TrendingDown size={12} className="mr-1"/> 2.5% vs last Q</div>
+            </div>
+            <div className="p-4 bg-slate-800 rounded-lg">
+                <div className="text-xs text-slate-500 mb-1">Largest Single Counterparty</div>
+                <div className="text-lg font-bold text-white font-heading">Acme Global</div>
+                <div className="text-xs text-slate-400 mt-1">12% of Portfolio</div>
+            </div>
+             <div className="p-4 bg-slate-800 rounded-lg">
+                <div className="text-xs text-slate-500 mb-1">Avg Credit Rating</div>
+                <div className="text-lg font-bold text-white font-heading">BBB+</div>
+                <div className="text-xs text-indigo-400 mt-1">Stable Outlook</div>
             </div>
         </div>
     </div>
@@ -590,6 +625,9 @@ export default function App() {
       { id: 5, time: "2 days ago", user: "System", action: "Batch Processing", details: "Daily interest accrual calculation completed" },
   ];
 
+  // API Config
+  const API_URL = "http://127.0.0.1:8000"; 
+
   // --- ACTIONS ---
   const addNotification = (msg, type = 'info') => {
     const id = Date.now();
@@ -657,14 +695,35 @@ export default function App() {
   };
 
   useEffect(() => {
-    // API Fetch simulation
-    const fetchStats = async () => {
+    const initData = async () => {
+        try {
+            // Try backend first
+            const lRes = await fetch(`${API_URL}/api/loans`);
+            const sRes = await fetch(`${API_URL}/api/stats`);
+            if (lRes.ok && sRes.ok) {
+                setLoans(await lRes.json());
+                setStats(await sRes.json());
+                return;
+            }
+        } catch (e) {
+            console.warn("Backend unavailable, running in standalone mode.");
+        }
+        
+        // Fallback/Standalone logic (Calculate stats from local/mock loans)
+        const total = loans.reduce((acc, curr) => acc + curr.amount, 0);
+        const active = loans.length;
+        const pending = loans.filter(l => l.status !== "Active").length;
+        setStats({ total_exposure: total, active_facilities: active, pending_actions: pending, avg_risk_score: 92 });
+    };
+    initData();
+  }, []); // Run once on mount
+
+  // Recalculate stats when loans change (e.g. new deal added locally)
+  useEffect(() => {
       const total = loans.reduce((acc, curr) => acc + curr.amount, 0);
       const active = loans.length;
       const pending = loans.filter(l => l.status !== "Active").length;
       setStats({ total_exposure: total, active_facilities: active, pending_actions: pending, avg_risk_score: 92 });
-    };
-    fetchStats();
   }, [loans]);
 
   const filteredLoans = loans.filter(loan => 
