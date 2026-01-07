@@ -626,7 +626,8 @@ export default function App() {
   ];
 
   // API Config
-  const API_URL = "http://127.0.0.1:8000"; 
+  // NOTE: Replace this URL with your Render Backend URL when deploying (e.g., "https://meridian-api.onrender.com")
+  const API_URL = "http://127.0.0.1:8000";
 
   // --- ACTIONS ---
   const addNotification = (msg, type = 'info') => {
