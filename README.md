@@ -96,7 +96,9 @@ The frontend will launch at http://localhost:5173
 Open a new terminal window:
 
 cd backend
+
 pip install -r requirements.txt
+
 uvicorn main:app --reload
 
 
@@ -132,5 +134,6 @@ Aaryan Pawar - Lead Developer & Product Designer
 
 
 Built with ❤️ for the LMA Edge Hackathon.
+
 
 
